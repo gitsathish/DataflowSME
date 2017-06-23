@@ -91,7 +91,7 @@ public class Exercise0 {
         .apply("ParseGameEvent", ParDo.of(new ParseEventFn()))
         .apply("FormatGameEvent", ParDo.of(new FormatGameEventFn()))
         .apply(
-            BigQueryIO.<TableRow>write().to(tableRef)
+            BigQueryIO.writeTableRows().to(tableRef)
                 .withSchema(FormatGameEventFn.getSchema())
                 .withCreateDisposition(CreateDisposition.CREATE_IF_NEEDED)
                 .withWriteDisposition(WriteDisposition.WRITE_APPEND));
