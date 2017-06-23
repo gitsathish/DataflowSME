@@ -80,66 +80,9 @@
             <artifactId>maven-compiler-plugin</artifactId>
             <executions>
 
-              <!-- Set `-source 1.7 -target 1.7` for Java 7 tests -->
-              <execution>
-                <id>default-testCompile</id>
-                <phase>test-compile</phase>
-                <goals>
-                  <goal>testCompile</goal>
-                </goals>
-                <configuration>
-                  <testSource>1.7</testSource>
-                  <testTarget>1.7</testTarget>
-                  <testExcludes>
-                    <!-- This pattern is brittle; we would prefer to filter on the directory
-                         but that seems to be unavailable to us. -->
-                    <exclude>**/*Java8Test.java</exclude>
-                    <exclude>**/game/**/*.java</exclude>
-                  </testExcludes>
-                </configuration>
-              </execution>
-
-              <!-- Set `-source 1.8 -target 1.8` for Java 8 tests -->
-              <execution>
-                <id>java8-test-compile</id>
-                <phase>test-compile</phase>
-                <goals>
-                  <goal>testCompile</goal>
-                </goals>
-                <configuration>
-                  <testSource>1.8</testSource>
-                  <testTarget>1.8</testTarget>
-                  <includes>
-                    <!-- This pattern is brittle; we would prefer to filter on the directory
-                         but that seems to be unavailable to us. -->
-                    <include>**/*Java8Test.java</include>
-                    <include>**/game/**/*.java</include>
-                  </includes>
-                </configuration>
-              </execution>
-
-              <!-- Set `-source 1.7 -target 1.7` for Java 7 examples -->
-              <execution>
-                <id>default-compile</id>
-                <phase>compile</phase>
-                <goals>
-                  <goal>compile</goal>
-                </goals>
-                <configuration>
-                  <source>1.7</source>
-                  <target>1.7</target>
-                  <excludes>
-                    <!-- This pattern is brittle; we would prefer to filter on the directory
-                         but that seems to be unavailable to us. -->
-                    <exclude>**/*Java8*.java</exclude>
-                    <exclude>**/game/**/*.java</exclude>
-                  </excludes>
-                </configuration>
-              </execution>
-
               <!-- Set `-source 1.8 -target 1.8` for Java 8 examples -->
               <execution>
-                <id>java8-compile</id>
+                <id>default-compile</id>
                 <phase>compile</phase>
                 <goals>
                   <goal>compile</goal>
