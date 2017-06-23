@@ -155,15 +155,8 @@
                   </includes>
                   <compilerArgs>
                     <arg>-Werror</arg>
-                    <arg>-Xlint:all</arg>
-                    <arg>-Xlint:-cast</arg>
-                    <arg>-Xlint:-deprecation</arg>
+                    <arg>-Xlint:all</arg>:-processing
                     <arg>-Xlint:-processing</arg>
-                    <arg>-Xlint:-rawtypes</arg>
-                    <arg>-Xlint:-serial</arg>
-                    <arg>-Xlint:-try</arg>
-                    <arg>-Xlint:-unchecked</arg>
-                    <arg>-Xlint:-varargs</arg>
                   </compilerArgs>
                 </configuration>
               </execution>
