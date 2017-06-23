@@ -73,7 +73,7 @@ the dataset?
 
     ```shell
     $ mvn compile exec:java \
-         -Dexec.mainClass=com.google.cloud.dataflow.tutorials.game.Exercise0 \
+         -Dexec.mainClass=Exercise0 \
          -Dexec.args="--project=YOUR-PROJECT \
                       --stagingLocation=gs://YOUR-STAGING-BUCKET \
                       --runner=BlockingDataflowPipelineRunner \
@@ -113,7 +113,7 @@ What is the total score of the user 'user0_AmberDingo'?
 
     ```shell
     $ mvn compile exec:java \
-         -Dexec.mainClass=com.google.cloud.dataflow.tutorials.game.Exercise1 \
+         -Dexec.mainClass=Exercise1 \
          -Dexec.args="--project=YOUR-PROJECT \
                       --stagingLocation=gs://YOUR-STAGING-BUCKET \
                       --tempLocation=gs://YOUR-STAGING-BUCKET \
@@ -158,7 +158,7 @@ What was the total score of 'AmberDingo' at '2017-03-18 16:00:00 UTC'?
 
     ```shell
     $ mvn compile exec:java \
-         -Dexec.mainClass=com.google.cloud.dataflow.tutorials.game.Exercise2 \
+         -Dexec.mainClass=Exercise2 \
          -Dexec.args="--project=YOUR-PROJECT \
                       --stagingLocation=gs://YOUR-STAGING-BUCKET \
                       --tempLocation=gs://YOUR-STAGING-BUCKET \
@@ -196,7 +196,7 @@ But first, we need to set up the injector to publish scores via PubSub.
 
     ```shell
     $ mvn exec:java \
-      -Dexec.mainClass="com.google.cloud.dataflow.tutorials.game.injector.Injector" \
+      -Dexec.mainClass="Injector" \
       -Dexec.args="YOUR-PROJECT game_events_$USER none none"
     ```
 
@@ -210,7 +210,7 @@ batch or streaming mode.
 
     ```shell
     $ mvn compile exec:java \
-         -Dexec.mainClass=com.google.cloud.dataflow.tutorials.game.Exercise3 \
+         -Dexec.mainClass=Exercise3 \
          -Dexec.args="--project=YOUR-PROJECT \
                       --stagingLocation=gs://YOUR-STAGING-BUCKET \
                       --tempLocation=gs://YOUR-STAGING-BUCKET \
@@ -224,7 +224,7 @@ batch or streaming mode.
 
     ```shell
     $ mvn compile exec:java \
-         -Dexec.mainClass=com.google.cloud.dataflow.tutorials.game.Exercise3 \
+         -Dexec.mainClass=Exercise3 \
          -Dexec.args="--project=YOUR-PROJECT \
                       --stagingLocation=gs://YOUR-STAGING-BUCKET \
                       --tempLocation=gs://YOUR-STAGING-BUCKET \
@@ -253,7 +253,7 @@ Part 2: Calculate the team scores for each minute that the pipeline runs.
 
     ```shell
     $ mvn compile exec:java \
-          -Dexec.mainClass=com.google.cloud.dataflow.tutorials.game.Exercise4 \
+          -Dexec.mainClass=Exercise4 \
           -Dexec.args="--project=YOUR-PROJECT \
           --stagingLocation=gs://YOUR-STAGING_BUCKET \
           --runner=BlockingDataflowPipelineRunner \
@@ -283,7 +283,7 @@ results to compute non-spammy team scores.
 
     ```shell
     $ mvn compile exec:java \
-          -Dexec.mainClass=com.google.cloud.dataflow.tutorials.game.Exercise5 \
+          -Dexec.mainClass=Exercise5 \
           -Dexec.args="--project=YOUR-PROJECT \
           --stagingLocation=gs://YOUR-STAGING_BUCKET \
           --runner=BlockingDataflowPipelineRunner \
@@ -311,7 +311,7 @@ Compute periodic global mean session durations for users.
 
     ```shell
     $ mvn compile exec:java \
-          -Dexec.mainClass=com.google.cloud.dataflow.tutorials.game.Exercise6 \
+          -Dexec.mainClass=Exercise6 \
           -Dexec.args="--project=YOUR-PROJECT \
           --stagingLocation=gs://YOUR-STAGING_BUCKET \
           --runner=BlockingDataflowPipelineRunner \
@@ -340,7 +340,7 @@ play' events and 'game score' events.
 
     ```shell
     $ mvn exec:java \
-      -Dexec.mainClass="com.google.cloud.dataflow.tutorials.game.injector.Injector" \
+      -Dexec.mainClass="Injector" \
       -Dexec.args="YOUR-PROJECT game_events_$USER play_events_$USER none"
     ```
 
@@ -348,7 +348,7 @@ play' events and 'game score' events.
 
     ```shell
     $ mvn compile exec:java \
-          -Dexec.mainClass=com.google.cloud.dataflow.tutorials.game.Exercise7 \
+          -Dexec.mainClass=Exercise7 \
           -Dexec.args="--project=YOUR-PROJECT \
           --stagingLocation=gs://YOUR-STAGING_BUCKET \
           --runner=BlockingDataflowPipelineRunner \
