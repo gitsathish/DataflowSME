@@ -75,7 +75,7 @@ the dataset?
     $ mvn compile exec:java \
          -Dexec.mainClass=Exercise0 \
          -Dexec.args="--project=YOUR-PROJECT \
-                      --stagingLocation=gs://YOUR-STAGING-BUCKET \
+                      --tempLocation=gs://YOUR-STAGING-BUCKET \
                       --runner=BlockingDataflowPipelineRunner \
                       --outputDataset=YOUR-BIGQUERY-DATASET \
                       --outputTableName=events \
@@ -115,7 +115,6 @@ What is the total score of the user 'user0_AmberDingo'?
     $ mvn compile exec:java \
          -Dexec.mainClass=Exercise1 \
          -Dexec.args="--project=YOUR-PROJECT \
-                      --stagingLocation=gs://YOUR-STAGING-BUCKET \
                       --tempLocation=gs://YOUR-STAGING-BUCKET \
                       --runner=DirectPipelineRunner \
                       --outputDataset=YOUR-BIGQUERY-DATASET \
@@ -160,7 +159,6 @@ What was the total score of 'AmberDingo' at '2017-03-18 16:00:00 UTC'?
     $ mvn compile exec:java \
          -Dexec.mainClass=Exercise2 \
          -Dexec.args="--project=YOUR-PROJECT \
-                      --stagingLocation=gs://YOUR-STAGING-BUCKET \
                       --tempLocation=gs://YOUR-STAGING-BUCKET \
                       --runner=DirectPipelineRunner \
                       --outputDataset=YOUR-BIGQUERY-DATASET \
@@ -212,7 +210,6 @@ batch or streaming mode.
     $ mvn compile exec:java \
          -Dexec.mainClass=Exercise3 \
          -Dexec.args="--project=YOUR-PROJECT \
-                      --stagingLocation=gs://YOUR-STAGING-BUCKET \
                       --tempLocation=gs://YOUR-STAGING-BUCKET \
                       --runner=DirectPipelineRunner \
                       --outputDataset=YOUR-BIGQUERY-DATASET \
@@ -226,7 +223,6 @@ batch or streaming mode.
     $ mvn compile exec:java \
          -Dexec.mainClass=Exercise3 \
          -Dexec.args="--project=YOUR-PROJECT \
-                      --stagingLocation=gs://YOUR-STAGING-BUCKET \
                       --tempLocation=gs://YOUR-STAGING-BUCKET \
                       --runner=BlockingDataflowPipelineRunner \
                       --outputDataset=YOUR-BIGQUERY-DATASET \
@@ -255,7 +251,7 @@ Part 2: Calculate the team scores for each minute that the pipeline runs.
     $ mvn compile exec:java \
           -Dexec.mainClass=Exercise4 \
           -Dexec.args="--project=YOUR-PROJECT \
-          --stagingLocation=gs://YOUR-STAGING_BUCKET \
+          --tempLocation=gs://YOUR-STAGING_BUCKET \
           --runner=BlockingDataflowPipelineRunner \
           --topic=projects/YOUR-PROJECT/topics/game_events_$USER \
           --outputDataset=YOUR-BIGQUERY-DATASET \
@@ -285,7 +281,7 @@ results to compute non-spammy team scores.
     $ mvn compile exec:java \
           -Dexec.mainClass=Exercise5 \
           -Dexec.args="--project=YOUR-PROJECT \
-          --stagingLocation=gs://YOUR-STAGING_BUCKET \
+          --tempLocation=gs://YOUR-STAGING_BUCKET \
           --runner=BlockingDataflowPipelineRunner \
           --topic=projects/YOUR-PROJECT/topics/game_events_$USER \
           --outputDataset=YOUR-BIGQUERY-DATASET \
@@ -313,7 +309,7 @@ Compute periodic global mean session durations for users.
     $ mvn compile exec:java \
           -Dexec.mainClass=Exercise6 \
           -Dexec.args="--project=YOUR-PROJECT \
-          --stagingLocation=gs://YOUR-STAGING_BUCKET \
+          --tempLocation=gs://YOUR-STAGING_BUCKET \
           --runner=BlockingDataflowPipelineRunner \
           --topic=projects/YOUR-PROJECT/topics/game_events_$USER \
           --outputDataset=YOUR-BIGQUERY-DATASET \
@@ -350,7 +346,7 @@ play' events and 'game score' events.
     $ mvn compile exec:java \
           -Dexec.mainClass=Exercise7 \
           -Dexec.args="--project=YOUR-PROJECT \
-          --stagingLocation=gs://YOUR-STAGING_BUCKET \
+          --tempLocation=gs://YOUR-STAGING_BUCKET \
           --runner=BlockingDataflowPipelineRunner \
           --topic=projects/YOUR-PROJECT/topics/game_events_$USER \
           --playEventsTopic=projects/YOUR-PROJECT/topics/play_events_$USER \
