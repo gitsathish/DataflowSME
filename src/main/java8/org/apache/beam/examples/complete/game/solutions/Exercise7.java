@@ -211,7 +211,7 @@ public class Exercise7 {
             .apply(
                 "GlobalWindowRetrigger",
                 Window.<Long>into(new GlobalWindows())
-                    .triggering(Repeatedly.forever(AfterPane.elementCountAtLeast(100)))
+                    .triggering(Repeatedly.forever(AfterPane.elementCountAtLeast(1000)))
                     .accumulatingFiredPanes())
             .apply(
                 ((Combine.Globally<Long, List<Long>>)
