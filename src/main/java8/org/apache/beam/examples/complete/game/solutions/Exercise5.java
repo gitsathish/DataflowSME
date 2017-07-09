@@ -154,7 +154,6 @@ public class Exercise5 {
         PipelineOptionsFactory.fromArgs(args).withValidation().as(Exercise5Options.class);
     // Enforce that this pipeline is always run in streaming mode.
     options.setStreaming(true);
-    // Allow the pipeline to be cancelled automatically.
     options.setRunner(DataflowRunner.class);
     Pipeline pipeline = Pipeline.create(options);
 
@@ -179,8 +178,7 @@ public class Exercise5 {
     final PCollectionView<Map<String, Integer>> spammersView =
         userEvents
             .apply("FixedWindowsUser",
-                Window
-                    .<KV<String, Integer>>into(
+                Window.<KV<String, Integer>>into(
                         FixedWindows.of(
                             Duration.standardMinutes(options.getFixedWindowDuration()))))
 
@@ -224,9 +222,7 @@ public class Exercise5 {
                 .withCreateDisposition(CreateDisposition.CREATE_IF_NEEDED)
                 .withWriteDisposition(WriteDisposition.WRITE_APPEND));
 
-    // Run the pipeline and wait for the pipeline to finish; capture cancellation requests from the
-    // command line.
-    PipelineResult result = pipeline.run();
+    pipeline.run();
   }
 
   /**

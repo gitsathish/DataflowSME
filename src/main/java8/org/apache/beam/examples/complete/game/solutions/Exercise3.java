@@ -94,7 +94,7 @@ public class Exercise3 {
     // Read events from either a CSV file or PubSub stream.
     pipeline
         .apply(new ReadGameEvents(options))
-        .apply("WindowedTeamScore", new Exercise2.WindowedTeamScore(Duration.standardMinutes(60)))
+        .apply("WindowedTeamScore", new Exercise2.WindowedTeamScore(Duration.standardMinutes(5)))
         // Write the results to BigQuery.
         .apply("FormatTeamScoreSums", ParDo.of(new Exercise2.FormatTeamScoreSumsFn()))
         .apply(

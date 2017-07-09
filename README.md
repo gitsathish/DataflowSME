@@ -51,7 +51,7 @@ included `Injector` program). All exercises write their output to BigQuery.
     ```
 
     Alternatively, download it from
-    [here](https://github.com/mdvorsky/DataflowSME/archive/master.zip), and then
+    [here](https://github.com/malo-denielou/DataflowSME/archive/master.zip), and then
     unzip it:
 
     ```shell
@@ -76,7 +76,7 @@ the dataset?
          -Dexec.mainClass=Exercise0 \
          -Dexec.args="--project=YOUR-PROJECT \
                       --tempLocation=gs://YOUR-STAGING-BUCKET \
-                      --runner=BlockingDataflowPipelineRunner \
+                      --runner=DataflowRunner \
                       --outputDataset=YOUR-BIGQUERY-DATASET \
                       --outputTableName=events \
                       --input=gs://dataflow-samples/game/gaming_data1.csv"
@@ -116,7 +116,7 @@ What is the total score of the user 'user0_AmberDingo'?
          -Dexec.mainClass=Exercise1 \
          -Dexec.args="--project=YOUR-PROJECT \
                       --tempLocation=gs://YOUR-STAGING-BUCKET \
-                      --runner=DirectPipelineRunner \
+                      --runner=DirecRunner \
                       --outputDataset=YOUR-BIGQUERY-DATASET \
                       --outputTableName=user_scores \
                       --input=gs://dataflow-sme-tutorial/gaming_data0.csv"
@@ -141,7 +141,7 @@ What is the total score of the user 'user0_AmberDingo'?
     and then execute the above `mvn` command with
 
     ```shell
-        --runner=BlockingDataflowPipelineRunner
+        --runner=DataflowRunner
     ```
 
 ## Exercise 2
@@ -160,7 +160,7 @@ What was the total score of 'AmberDingo' at '2017-03-18 16:00:00 UTC'?
          -Dexec.mainClass=Exercise2 \
          -Dexec.args="--project=YOUR-PROJECT \
                       --tempLocation=gs://YOUR-STAGING-BUCKET \
-                      --runner=DirectPipelineRunner \
+                      --runner=DirectRunner \
                       --outputDataset=YOUR-BIGQUERY-DATASET \
                       --outputTableName=hourly_team_scores \
                       --input=gs://dataflow-sme-tutorial/gaming_data0.csv"
@@ -211,7 +211,7 @@ batch or streaming mode.
          -Dexec.mainClass=Exercise3 \
          -Dexec.args="--project=YOUR-PROJECT \
                       --tempLocation=gs://YOUR-STAGING-BUCKET \
-                      --runner=DirectPipelineRunner \
+                      --runner=DirectRunner \
                       --outputDataset=YOUR-BIGQUERY-DATASET \
                       --outputTableName=hourly_team_scores \
                       --input=gs://dataflow-sme-tutorial/gaming_data0.csv"
@@ -224,7 +224,7 @@ batch or streaming mode.
          -Dexec.mainClass=Exercise3 \
          -Dexec.args="--project=YOUR-PROJECT \
                       --tempLocation=gs://YOUR-STAGING-BUCKET \
-                      --runner=BlockingDataflowPipelineRunner \
+                      --runner=DataflowRunner \
                       --outputDataset=YOUR-BIGQUERY-DATASET \
                       --outputTableName=hourly_team_scores \
                       --topic=projects/YOUR-PROJECT/topics/game_events_$USER \
@@ -252,7 +252,7 @@ Part 2: Calculate the team scores for each minute that the pipeline runs.
           -Dexec.mainClass=Exercise4 \
           -Dexec.args="--project=YOUR-PROJECT \
           --tempLocation=gs://YOUR-STAGING_BUCKET \
-          --runner=BlockingDataflowPipelineRunner \
+          --runner=DataflowRunner \
           --topic=projects/YOUR-PROJECT/topics/game_events_$USER \
           --outputDataset=YOUR-BIGQUERY-DATASET \
           --outputTableName=leaderboard"
@@ -282,7 +282,7 @@ results to compute non-spammy team scores.
           -Dexec.mainClass=Exercise5 \
           -Dexec.args="--project=YOUR-PROJECT \
           --tempLocation=gs://YOUR-STAGING_BUCKET \
-          --runner=BlockingDataflowPipelineRunner \
+          --runner=DataflowRunner \
           --topic=projects/YOUR-PROJECT/topics/game_events_$USER \
           --outputDataset=YOUR-BIGQUERY-DATASET \
           --outputTableName=despammed_scores"
@@ -310,7 +310,7 @@ Compute periodic global mean session durations for users.
           -Dexec.mainClass=Exercise6 \
           -Dexec.args="--project=YOUR-PROJECT \
           --tempLocation=gs://YOUR-STAGING_BUCKET \
-          --runner=BlockingDataflowPipelineRunner \
+          --runner=DataflowRunner \
           --topic=projects/YOUR-PROJECT/topics/game_events_$USER \
           --outputDataset=YOUR-BIGQUERY-DATASET \
           --outputTableName=sessions"
@@ -347,7 +347,7 @@ play' events and 'game score' events.
           -Dexec.mainClass=Exercise7 \
           -Dexec.args="--project=YOUR-PROJECT \
           --tempLocation=gs://YOUR-STAGING_BUCKET \
-          --runner=BlockingDataflowPipelineRunner \
+          --runner=DataflowRunner \
           --topic=projects/YOUR-PROJECT/topics/game_events_$USER \
           --playEventsTopic=projects/YOUR-PROJECT/topics/play_events_$USER \
           --outputDataset=YOUR-BIGQUERY-DATASET \

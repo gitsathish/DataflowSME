@@ -150,7 +150,6 @@ public class Exercise7 {
         PipelineOptionsFactory.fromArgs(args).withValidation().as(Exercise7Options.class);
     // Enforce that this pipeline is always run in streaming mode.
     options.setStreaming(true);
-    // Allow the pipeline to be cancelled automatically.
     options.setRunner(DataflowRunner.class);
     Pipeline pipeline = Pipeline.create(options);
 
@@ -227,6 +226,7 @@ public class Exercise7 {
             ParDo
                 .of(
                     new DoFn<KV<String, Long>, String>() {
+                      @ProcessElement
                       public void processElement(ProcessContext c) {
                         String user = c.element().getKey();
                         Long latency = c.element().getValue();
@@ -259,9 +259,7 @@ public class Exercise7 {
                 .withCreateDisposition(CreateDisposition.CREATE_IF_NEEDED)
                 .withWriteDisposition(WriteDisposition.WRITE_APPEND));
 
-    // Run the pipeline and wait for the pipeline to finish; capture cancellation requests from the
-    // command line.
-    PipelineResult result = pipeline.run();
+    pipeline.run();
   }
 
   /**

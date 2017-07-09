@@ -41,6 +41,7 @@ import org.apache.beam.sdk.transforms.DoFn;
 import org.apache.beam.sdk.transforms.MapElements;
 import org.apache.beam.sdk.transforms.Mean;
 import org.apache.beam.sdk.transforms.ParDo;
+import org.apache.beam.sdk.transforms.windowing.BoundedWindow;
 import org.apache.beam.sdk.transforms.windowing.FixedWindows;
 import org.apache.beam.sdk.transforms.windowing.IntervalWindow;
 import org.apache.beam.sdk.transforms.windowing.Sessions;
@@ -69,7 +70,8 @@ public class Exercise6 {
   private static class UserSessionInfoFn extends DoFn<KV<String, Integer>, Integer> {
 
     @ProcessElement
-    public void processElement(ProcessContext c, IntervalWindow w) {
+    public void processElement(ProcessContext c, BoundedWindow window) {
+      IntervalWindow w = (IntervalWindow) window;
       int duration = new Duration(w.start(), w.end()).toPeriod().toStandardMinutes().getMinutes();
       c.output(duration);
     }
@@ -100,7 +102,6 @@ public class Exercise6 {
         PipelineOptionsFactory.fromArgs(args).withValidation().as(Exercise6Options.class);
     // Enforce that this pipeline is always run in streaming mode.
     options.setStreaming(true);
-    // Allow the pipeline to be cancelled automatically.
     options.setRunner(DataflowRunner.class);
     Pipeline pipeline = Pipeline.create(options);
 
@@ -151,9 +152,7 @@ public class Exercise6 {
                 .withCreateDisposition(CreateDisposition.CREATE_IF_NEEDED)
                 .withWriteDisposition(WriteDisposition.WRITE_APPEND));
 
-    // Run the pipeline and wait for the pipeline to finish; capture cancellation requests from the
-    // command line.
-    PipelineResult result = pipeline.run();
+    pipeline.run();
   }
 
   /**
@@ -162,10 +161,11 @@ public class Exercise6 {
   static class FormatSessionWindowFn extends DoFn<Double, TableRow> {
 
     @ProcessElement
-    public void processElement(ProcessContext c, IntervalWindow window) {
+    public void processElement(ProcessContext c, BoundedWindow window) {
+      IntervalWindow w = (IntervalWindow) window;
       TableRow row =
           new TableRow()
-              .set("window_start", window.start().getMillis() / 1000)
+              .set("window_start", w.start().getMillis() / 1000)
               .set("mean_duration", c.element());
       c.output(row);
     }
