@@ -26,7 +26,6 @@ import org.apache.beam.examples.complete.game.utils.Options;
 import org.apache.beam.examples.complete.game.utils.PlayEvent;
 import org.apache.beam.runners.dataflow.DataflowRunner;
 import org.apache.beam.sdk.Pipeline;
-import org.apache.beam.sdk.PipelineResult;
 import org.apache.beam.sdk.extensions.gcp.options.GcpOptions;
 import org.apache.beam.sdk.io.gcp.bigquery.BigQueryIO;
 import org.apache.beam.sdk.io.gcp.bigquery.BigQueryIO.Write.CreateDisposition;
@@ -137,7 +136,6 @@ public class Exercise7 {
         PipelineOptionsFactory.fromArgs(args).withValidation().as(Exercise7Options.class);
     // Enforce that this pipeline is always run in streaming mode.
     options.setStreaming(true);
-    // Allow the pipeline to be cancelled automatically.
     options.setRunner(DataflowRunner.class);
     Pipeline pipeline = Pipeline.create(options);
 
@@ -180,7 +178,7 @@ public class Exercise7 {
                   }
                 }).withSideInputs(globalQuantiles)
         )
-        // We want to only emilt a single BigQuery row for every bad user. To do this, we
+        // We want to only emit a single BigQuery row for every bad user. To do this, we
         // re-key by user, then window globally and trigger on the first element for each key.
         .apply(
             "KeyByUser",
@@ -202,9 +200,7 @@ public class Exercise7 {
                 .withWriteDisposition(WriteDisposition.WRITE_APPEND));
     // [END EXERCISE 7]
 
-    // Run the pipeline and wait for the pipeline to finish; capture cancellation requests from the
-    // command line.
-    PipelineResult result = pipeline.run();
+    pipeline.run();
   }
 
   /**

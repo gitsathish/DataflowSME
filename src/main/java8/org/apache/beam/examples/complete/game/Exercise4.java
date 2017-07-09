@@ -29,7 +29,6 @@ import org.apache.beam.examples.complete.game.utils.GameEvent;
 import org.apache.beam.examples.complete.game.utils.Options;
 import org.apache.beam.runners.dataflow.DataflowRunner;
 import org.apache.beam.sdk.Pipeline;
-import org.apache.beam.sdk.PipelineResult;
 import org.apache.beam.sdk.extensions.gcp.options.GcpOptions;
 import org.apache.beam.sdk.io.gcp.bigquery.BigQueryIO;
 import org.apache.beam.sdk.io.gcp.bigquery.BigQueryIO.Write.CreateDisposition;
@@ -149,8 +148,6 @@ public class Exercise4 {
         PipelineOptionsFactory.fromArgs(args).withValidation().as(Exercise4Options.class);
     // Enforce that this pipeline is always run in streaming mode.
     options.setStreaming(true);
-    // For example purposes, allow the pipeline to be easily cancelled instead of running
-    // continuously.
     options.setRunner(DataflowRunner.class);
     Pipeline pipeline = Pipeline.create(options);
 
@@ -192,9 +189,7 @@ public class Exercise4 {
                 .withCreateDisposition(CreateDisposition.CREATE_IF_NEEDED)
                 .withWriteDisposition(WriteDisposition.WRITE_APPEND));
 
-    // Run the pipeline and wait for the pipeline to finish; capture cancellation requests from the
-    // command line.
-    PipelineResult result = pipeline.run();
+    pipeline.run();
   }
 
   /**
