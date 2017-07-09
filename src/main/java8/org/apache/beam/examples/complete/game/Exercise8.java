@@ -278,6 +278,7 @@ public class Exercise8 {
             "DetectBadUsers",
             ParDo.of(
                 new DoFn<KV<String, Long>, String>() {
+                  @ProcessElement
                   public void processElement(ProcessContext c) {
                     String user = c.element().getKey();
                     Long latency = c.element().getValue();
@@ -356,6 +357,7 @@ public class Exercise8 {
   public static class ExpensiveWorkPerElement<K, V>
       extends DoFn<KV<K, Iterable<V>>, KV<K, Iterable<V>>> {
 
+    @ProcessElement
     public void processElement(ProcessContext c) {
       for (V item : c.element().getValue()) {
         try {
