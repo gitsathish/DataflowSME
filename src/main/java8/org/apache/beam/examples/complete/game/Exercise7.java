@@ -52,8 +52,6 @@ import org.joda.time.Instant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.xml.bind.annotation.XmlElementDecl;
-
 /**
  * Seventh in a series of coding exercises in a gaming domain.
  *
@@ -206,7 +204,7 @@ public class Exercise7 {
             );
 
     // 1. Get the values of userLatencies
-    // 2. Re-window into GlobalWindows with periodic repeated triggers
+    // 2. Re-window into GlobalWindows that repeatedly triggers after 1000 new elements
     // 3. Compute global approximate quantiles
     PCollectionView<List<Long>> globalQuantiles =
         userLatency

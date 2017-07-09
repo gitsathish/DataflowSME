@@ -51,11 +51,7 @@ import org.apache.beam.sdk.transforms.WithKeys;
 import org.apache.beam.sdk.transforms.join.CoGbkResult;
 import org.apache.beam.sdk.transforms.join.CoGroupByKey;
 import org.apache.beam.sdk.transforms.join.KeyedPCollectionTuple;
-import org.apache.beam.sdk.transforms.windowing.AfterProcessingTime;
-import org.apache.beam.sdk.transforms.windowing.GlobalWindows;
-import org.apache.beam.sdk.transforms.windowing.Repeatedly;
-import org.apache.beam.sdk.transforms.windowing.Sessions;
-import org.apache.beam.sdk.transforms.windowing.Window;
+import org.apache.beam.sdk.transforms.windowing.*;
 import org.apache.beam.sdk.values.KV;
 import org.apache.beam.sdk.values.PCollection;
 import org.apache.beam.sdk.values.PCollectionView;
@@ -79,7 +75,6 @@ public class Exercise8 {
   private static final String MESSAGE_ID_ATTRIBUTE = "unique_id";
   private static final int GLOBAL_LATENCY_QUANTILES = 21;
   private static final int GLOBAL_AGGREGATE_FANOUT = 16;
-  private static final int GLOBAL_AGGREGATE_TRIGGER_SEC = 30;
   private static final Logger LOG = LoggerFactory.getLogger(Exercise8.class);
 
   private static final TupleTag<PlayEvent> playTag = new TupleTag<PlayEvent>();
@@ -261,11 +256,7 @@ public class Exercise8 {
             .apply(
                 "GlobalWindowRetrigger",
                 Window.<Long>into(new GlobalWindows())
-                    .triggering(
-                        Repeatedly.forever(
-                            AfterProcessingTime.pastFirstElementInPane()
-                                .plusDelayOf(
-                                    Duration.standardSeconds(GLOBAL_AGGREGATE_TRIGGER_SEC))))
+                    .triggering(Repeatedly.forever(AfterPane.elementCountAtLeast(1000)))
                     .accumulatingFiredPanes())
             .apply(
                 ((Combine.Globally<Long, List<Long>>)
