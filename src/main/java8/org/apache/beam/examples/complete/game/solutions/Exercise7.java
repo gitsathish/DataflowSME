@@ -30,6 +30,7 @@ import org.apache.beam.examples.complete.game.utils.ParsePlayEventFn;
 import org.apache.beam.examples.complete.game.utils.PlayEvent;
 import org.apache.beam.runners.dataflow.DataflowRunner;
 import org.apache.beam.sdk.Pipeline;
+import org.apache.beam.sdk.PipelineResult;
 import org.apache.beam.sdk.extensions.gcp.options.GcpOptions;
 import org.apache.beam.sdk.io.gcp.bigquery.BigQueryIO;
 import org.apache.beam.sdk.io.gcp.bigquery.BigQueryIO.Write.CreateDisposition;
@@ -258,7 +259,8 @@ public class Exercise7 {
                 .withCreateDisposition(CreateDisposition.CREATE_IF_NEEDED)
                 .withWriteDisposition(WriteDisposition.WRITE_APPEND));
 
-    pipeline.run();
+    PipelineResult result = pipeline.run();
+    result.waitUntilFinish();
   }
 
   /**

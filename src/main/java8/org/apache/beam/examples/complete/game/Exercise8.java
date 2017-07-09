@@ -28,6 +28,7 @@ import org.apache.beam.examples.complete.game.utils.Options;
 import org.apache.beam.examples.complete.game.utils.PlayEvent;
 import org.apache.beam.runners.dataflow.DataflowRunner;
 import org.apache.beam.sdk.Pipeline;
+import org.apache.beam.sdk.PipelineResult;
 import org.apache.beam.sdk.extensions.gcp.options.GcpOptions;
 import org.apache.beam.sdk.io.gcp.bigquery.BigQueryIO;
 import org.apache.beam.sdk.io.gcp.bigquery.BigQueryIO.Write.CreateDisposition;
@@ -329,7 +330,8 @@ public class Exercise8 {
         .apply("GroupByNewKey", GroupByKey.<String, KV<String, Long>>create())
         .apply("DoExpensiveWork", ParDo.of(new ExpensiveWorkPerElement()));
 
-    pipeline.run();
+    PipelineResult result = pipeline.run();
+    result.waitUntilFinish();
   }
 
   /**
