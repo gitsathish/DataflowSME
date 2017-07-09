@@ -59,16 +59,16 @@ public class Exercise3 {
     @Override
     public PCollection<GameEvent> expand(PBegin begin) {
       // [START EXERCISE 3]:
-      // JavaDoc: https://cloud.google.com/dataflow/java-sdk/JavaDoc
-      // Developer Docs: https://cloud.google.com/dataflow/model/pubsub-io
+      // Javadoc: https://beam.apache.org/documentation/sdks/javadoc/2.0.0/org/apache/beam/sdk/io/gcp/pubsub/PubsubIO.html
+      // Developer Docs (1.x): https://cloud.google.com/dataflow/model/pubsub-io
       //
       // Determine whether to use files or topic based on options.
-      // (For example, check that options.getInput() is not null and is non-empty.)
-      if (true /* TODO: YOUR CODE GOES HERE */) {
+      if (options.getInput() != null && !options.getInput().isEmpty()) {
         return begin
             .getPipeline()
-            // Read game events from files. See main() in Exercise2. Don't forget to include
-            // WithTimestamps transform to assign timestamps to events.
+            // Read game events from files. See main() in Exercise2. Don't forget to parse events or
+            // to include WithTimestamps transform to assign timestamps to events.
+            // https://beam.apache.org/documentation/sdks/javadoc/2.0.0/org/apache/beam/sdk/transforms/WithTimestamps.html
             .apply(new ChangeMe<>() /* TODO: YOUR CODE GOES HERE */)
             .apply(new ChangeMe<>() /* TODO: YOUR CODE GOES HERE */)
             .apply(new ChangeMe<>() /* TODO: YOUR CODE GOES HERE */);
@@ -78,6 +78,7 @@ public class Exercise3 {
             // Read game events from Pub/Sub topic options.getTopic() using custom timestamps, which
             // are extracted from the pubsub attribute TIMESTAMP_ATTRIBUTE.
             // Use PubsubIO.readStrings() with withTimestampAttribute() and fromTopic().
+            // https://beam.apache.org/documentation/sdks/javadoc/2.0.0/org/apache/beam/sdk/io/gcp/pubsub/PubsubIO.html
             .apply(new ChangeMe<>() /* TODO: YOUR CODE GOES HERE */)
             // Parse the messages the same way as when they come from the text file. Note that we no
             // longer have to run WithTimestamps transform, as the timestamps are already set by

@@ -95,12 +95,14 @@ public class Exercise4 {
     @Override
     public PCollection<KV<String, Integer>> expand(PCollection<GameEvent> input) {
       // [START EXERCISE 4 PART 1]:
-      // JavaDoc: https://cloud.google.com/dataflow/java-sdk/JavaDoc
-      // Developer Docs: https://cloud.google.com/dataflow/model/par-do
+      // JavaDoc: https://beam.apache.org/documentation/sdks/javadoc/2.0.0/org/apache/beam/sdk/transforms/windowing/Window.html
+      // Developer Docs: https://beam.apache.org/documentation/programming-guide/#windowing
       //
       // Fill in the code to:
       //   1. Window the incoming input into global windows
-      //   2. trigger every thirty seconds to emit speculative results.
+      //   2. that trigger every thirty seconds to emit speculative results,
+      //   3. allow late data with allowedLateness,
+      //   3. and don't forget to accumulate over the entire window.
       return input
           /* TODO: SOLUTION CODE HERE */
           // Extract and sum username/score pairs from the event data.
@@ -128,14 +130,16 @@ public class Exercise4 {
     @Override
     public PCollection<KV<String, Integer>> expand(PCollection<GameEvent> infos) {
       // [START EXERCISE 4 PART 2]:
-      // JavaDoc: https://cloud.google.com/dataflow/java-sdk/JavaDoc
-      // Developer Docs: https://cloud.google.com/dataflow/model/par-do
+      // JavaDoc: https://beam.apache.org/documentation/sdks/javadoc/2.0.0/org/apache/beam/sdk/transforms/windowing/Window.html
+      // Developer Docs: https://beam.apache.org/documentation/programming-guide/#windowing
       //
       // Fill in the code to:
-      //   1. Window the incoming input into fixed windows of team window duration
-      //   2. trigger on time results at the watermark
-      //   3. trigger speculative results every ten seconds
-      //   4. trigger late data results with a delay of thirty seconds
+      //   1. Window the incoming input into fixed windows of team window duration,
+      //   2. trigger on time results at the watermark,
+      //   3. trigger speculative results every ten seconds,
+      //   4. trigger late data results with a delay of thirty seconds,
+      //   5. don't forget to set the allowedLateness,
+      //   6. and ensure that we continue to accumulate over all data in the window.
       return infos
           /* TODO: SOLUTION CODE HERE */
           // Extract and sum teamname/score pairs from the event data.

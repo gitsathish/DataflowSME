@@ -67,8 +67,9 @@ public class Exercise1 {
     @Override
     public PCollection<KV<String, Integer>> expand(PCollection<GameEvent> gameEvents) {
       // [START EXERCISE 1]:
-      // JavaDoc: https://cloud.google.com/dataflow/java-sdk/JavaDoc
-      // Developer Docs: https://cloud.google.com/dataflow/model/par-do
+      // JavaDoc: https://beam.apache.org/documentation/sdks/javadoc/2.0.0/
+      // Developer Docs: https://beam.apache.org/documentation/programming-guide/#transforms-pardo
+      // Also: https://cloud.google.com/dataflow/model/par-do
       //
       // Fill in the code to:
       //   1. Extract a KV<String, Integer> from each GameEvent corresponding to the given

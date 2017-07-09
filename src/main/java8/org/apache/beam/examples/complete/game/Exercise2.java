@@ -69,8 +69,9 @@ public class Exercise2 {
     @Override
     public PCollection<KV<String, Integer>> expand(PCollection<GameEvent> input) {
       // [START EXERCISE 2]:
-      // JavaDoc: https://cloud.google.com/dataflow/java-sdk/JavaDoc
-      // Developer Docs: https://cloud.google.com/dataflow/model/windowing
+      // JavaDoc: https://beam.apache.org/documentation/sdks/javadoc/2.0.0/
+      // Developer Docs: https://beam.apache.org/documentation/programming-guide/#windowing
+      // Also: https://cloud.google.com/dataflow/model/windowing
       //
       return input
           // Window.into() takes a WindowFn and returns a PTransform that
@@ -81,7 +82,7 @@ public class Exercise2 {
           .apply(new ChangeMe<>() /* TODO: YOUR CODE GOES HERE */)
           // Remember the ExtractAndSumScore PTransform from Exercise 1? We
           // parameterized it over the key field. Use it here to compute the "team"
-          // scores.
+          // scores (recall it is a public static method of Exercise1).
           .apply(new ChangeMe<>() /* TODO: YOUR CODE GOES HERE */);
       // [END EXERCISE 2]
     }

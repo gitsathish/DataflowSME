@@ -34,6 +34,8 @@ import org.apache.beam.sdk.extensions.gcp.options.GcpOptions;
 import org.apache.beam.sdk.io.gcp.bigquery.BigQueryIO;
 import org.apache.beam.sdk.io.gcp.bigquery.BigQueryIO.Write.CreateDisposition;
 import org.apache.beam.sdk.io.gcp.bigquery.BigQueryIO.Write.WriteDisposition;
+import org.apache.beam.sdk.metrics.Counter;
+import org.apache.beam.sdk.metrics.Metrics;
 import org.apache.beam.sdk.options.Default;
 import org.apache.beam.sdk.options.Description;
 import org.apache.beam.sdk.options.PipelineOptionsFactory;
@@ -80,22 +82,39 @@ public class Exercise5 {
 
     @Override
     public PCollection<KV<String, Integer>> expand(PCollection<KV<String, Integer>> userScores) {
-      // [START EXERCISE 5 PART a]:
       // Get the sum of scores for each user.
       PCollection<KV<String, Integer>> sumScores =
           userScores.apply("UserSum", Sum.<String>integersPerKey());
 
-      // Extract the score from each element, and use it to find the global mean.
+      // [START EXERCISE 5 PART a]:
+      // Extract the score from each user->score KV pair, and use it to find the global mean.
       //  Use built-in transforms Values and Mean.
+      // Values: https://beam.apache.org/documentation/sdks/javadoc/2.0.0/org/apache/beam/sdk/transforms/Values.html
+      // Mean: https://beam.apache.org/documentation/sdks/javadoc/2.0.0/org/apache/beam/sdk/transforms/Mean.html
+      // Note that we are creating a singleton PCollectionView, so read the Mean documentation for
+      // how to create this (what is the return type of globally()?).
       final PCollectionView<Double> globalMeanScore = null; /* TODO: YOUR CODE GOES HERE */
 
       // Filter the user sums using the global mean.
-      // Developer Docs: https://cloud.google.com/dataflow/model/par-do#side-inputs
+      // Developer Docs: https://beam.apache.org/documentation/programming-guide/#transforms-sideio
       //
       //   Use ParDo with globalMeanScore as a side input and a custom DoFn to keep only users
       //   with scores that are > (mean * SCORE_WEIGHT)
       PCollection<KV<String, Integer>> filtered =
-          sumScores.apply(new ChangeMe<>() /* TODO: YOUR CODE GOES HERE */);
+          sumScores.apply("ProcessAndFilter",
+              ParDo.of(
+                  // Use the mean total score as a side input.
+                  new DoFn<KV<String, Integer>, KV<String, Integer>>() {
+                    private final Counter numSpammerUsers =
+                        Metrics.counter("main", "SpammerUsers");
+
+                    @ProcessElement
+                    public void processElement(ProcessContext c) {
+                      // TODO: Your code goes here.
+                      c.output(c.element());
+                    }
+                  }) // TODO: supply the side input.
+              );
       // [END EXERCISE 5 PART a]:
       return filtered;
     }
@@ -179,7 +198,15 @@ public class Exercise5 {
                     FixedWindows.of(Duration.standardMinutes(options.getFixedWindowDuration()))))
         // Filter out the detected spammer users, using the side input derived above.
         //  Use ParDo with spammersView side input to filter out spammers.
-        .apply(/* TODO: YOUR CODE GOES HERE */ new ChangeMe<PCollection<GameEvent>, GameEvent>())
+        .apply(
+            ParDo.of(
+              new DoFn<GameEvent, GameEvent>() {
+                @ProcessElement
+                public void processElement(ProcessContext c) {
+                  // TODO: If the user is not in the spammers Map, output the data element.
+                }
+              }) // TODO: Supply side input.
+        )
         // Extract and sum teamname/score pairs from the event data.
         .apply("ExtractTeamScore", new Exercise1.ExtractAndSumScore("team"))
         // Write the result to BigQuery
