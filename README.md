@@ -116,7 +116,7 @@ What is the total score of the user 'user0_AmberDingo'?
          -Dexec.mainClass=Exercise1 \
          -Dexec.args="--project=YOUR-PROJECT \
                       --tempLocation=gs://YOUR-STAGING-BUCKET \
-                      --runner=DirecRunner \
+                      --runner=DirectRunner \
                       --outputDataset=YOUR-BIGQUERY-DATASET \
                       --outputTableName=user_scores \
                       --input=gs://dataflow-sme-tutorial/gaming_data0.csv"
