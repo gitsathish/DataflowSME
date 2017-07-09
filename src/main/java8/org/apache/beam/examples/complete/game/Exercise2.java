@@ -59,6 +59,8 @@ public class Exercise2 {
    */
   public static class WindowedTeamScore
       extends PTransform<PCollection<GameEvent>, PCollection<KV<String, Integer>>> {
+    // Developer Docs for composite transforms:
+    //   https://beam.apache.org/documentation/programming-guide/#transforms-composite
 
     private Duration duration;
 

@@ -41,6 +41,7 @@ import org.apache.beam.sdk.transforms.DoFn;
 import org.apache.beam.sdk.transforms.MapElements;
 import org.apache.beam.sdk.transforms.Mean;
 import org.apache.beam.sdk.transforms.ParDo;
+import org.apache.beam.sdk.transforms.windowing.BoundedWindow;
 import org.apache.beam.sdk.transforms.windowing.IntervalWindow;
 import org.apache.beam.sdk.values.KV;
 import org.apache.beam.sdk.values.PCollection;
@@ -66,7 +67,8 @@ public class Exercise6 {
   private static class UserSessionInfoFn extends DoFn<KV<String, Integer>, Integer> {
 
     @ProcessElement
-    public void processElement(ProcessContext c, IntervalWindow w) {
+    public void processElement(ProcessContext c, BoundedWindow window) {
+      IntervalWindow w = (IntervalWindow) window;
       int duration = new Duration(w.start(), w.end()).toPeriod().toStandardMinutes().getMinutes();
       c.output(duration);
     }
@@ -126,7 +128,11 @@ public class Exercise6 {
         // to use an outputTimeFn that sets the output timestamp to the end of the window. This will
         // allow us to compute means on sessions based on their end times, rather than their start
         // times.
-        .apply(
+        // JavaDoc:
+        //   - https://beam.apache.org/documentation/sdks/javadoc/2.0.0/org/apache/beam/sdk/transforms/windowing/Sessions.html
+        //   - https://beam.apache.org/documentation/sdks/javadoc/2.0.0/org/apache/beam/sdk/transforms/windowing/Window.html
+        // Note: Pay attention to the withTimestampCombiner method on Window.
+        .apply("WindowIntoSessions",
             /* TODO: YOUR CODE GOES HERE */
             new ChangeMe<PCollection<KV<String, Integer>>, KV<String, Integer>>())
         // For this use, we care only about the existence of the session, not any particular
@@ -134,11 +140,14 @@ public class Exercise6 {
         .apply(Combine.perKey(x -> 0))
         // Get the duration per session.
         .apply("UserSessionActivity", ParDo.of(new UserSessionInfoFn()))
+        // Note that the output of the previous transform is a PCollection of session durations
+        // (PCollection<Integer>) where the timestamp of elements is the end of the window.
+        //
         // Re-window to process groups of session sums according to when the sessions complete.
         // In streaming we don't just ask "what is the mean value" we must ask "what is the mean
         // value for some window of time". To compute periodic means of session durations, we
         // re-window the session durations.
-        .apply(
+        .apply("WindowToExtractSessionMean",
             /* TODO: YOUR CODE GOES HERE */
             new ChangeMe<PCollection<Integer>, Integer>())
         // Find the mean session duration in each window.
@@ -162,10 +171,11 @@ public class Exercise6 {
   static class FormatSessionWindowFn extends DoFn<Double, TableRow> {
 
     @ProcessElement
-    public void processElement(ProcessContext c, IntervalWindow window) {
+    public void processElement(ProcessContext c, BoundedWindow window) {
+      IntervalWindow w = (IntervalWindow) window;
       TableRow row =
           new TableRow()
-              .set("window_start", window.start().getMillis() / 1000)
+              .set("window_start", w.start().getMillis() / 1000)
               .set("mean_duration", c.element());
       c.output(row);
     }

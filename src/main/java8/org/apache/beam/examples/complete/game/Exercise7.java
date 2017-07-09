@@ -21,6 +21,8 @@ import com.google.api.services.bigquery.model.TableRow;
 import com.google.api.services.bigquery.model.TableSchema;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.beam.examples.complete.game.utils.ChangeMe;
 import org.apache.beam.examples.complete.game.utils.GameEvent;
 import org.apache.beam.examples.complete.game.utils.Options;
 import org.apache.beam.examples.complete.game.utils.PlayEvent;
@@ -37,23 +39,20 @@ import org.apache.beam.sdk.options.Description;
 import org.apache.beam.sdk.options.PipelineOptionsFactory;
 import org.apache.beam.sdk.options.StreamingOptions;
 import org.apache.beam.sdk.options.Validation;
-import org.apache.beam.sdk.transforms.DoFn;
-import org.apache.beam.sdk.transforms.GroupByKey;
-import org.apache.beam.sdk.transforms.ParDo;
-import org.apache.beam.sdk.transforms.WithKeys;
+import org.apache.beam.sdk.transforms.*;
 import org.apache.beam.sdk.transforms.join.CoGbkResult;
+import org.apache.beam.sdk.transforms.join.CoGroupByKey;
+import org.apache.beam.sdk.transforms.join.KeyedPCollectionTuple;
 import org.apache.beam.sdk.transforms.windowing.AfterProcessingTime;
 import org.apache.beam.sdk.transforms.windowing.GlobalWindows;
 import org.apache.beam.sdk.transforms.windowing.Window;
-import org.apache.beam.sdk.values.KV;
-import org.apache.beam.sdk.values.PCollection;
-import org.apache.beam.sdk.values.PCollectionView;
-import org.apache.beam.sdk.values.TupleTag;
-import org.apache.beam.sdk.values.TypeDescriptor;
+import org.apache.beam.sdk.values.*;
 import org.joda.time.Duration;
 import org.joda.time.Instant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.xml.bind.annotation.XmlElementDecl;
 
 /**
  * Seventh in a series of coding exercises in a gaming domain.
@@ -150,22 +149,83 @@ public class Exercise7 {
     //  2. Parse events
     //  3. Key by event id
     //  4. Sessionize.
-    PCollection<KV<String, GameEvent>> sessionedEvents = null; /* TODO: YOUR CODE GOES HERE */
+    PCollection<KV<String, GameEvent>> sessionedEvents =
+        pipeline
+            .apply(
+                "ReadGameScoreEvents",
+                new ChangeMe<PBegin, String>()
+            )
+            .apply(
+                "ParseGameEvents",
+                new ChangeMe<PCollection<String>, GameEvent>()
+            )
+            .apply(
+                "KeyGameScoreByEventId",
+                new ChangeMe<PCollection<GameEvent>, KV<String, GameEvent>>()
+            )
+            .apply(
+                "SessionizeGameScoreEvents",
+                new ChangeMe<PCollection<KV<String, GameEvent>>, KV<String, GameEvent>>()
+            );
 
     //  1. Read play events with message id and timestamp
     //  2. Parse events
     //  3. Key by event id
     //  4. Sessionize.
-    PCollection<KV<String, PlayEvent>> sessionedPlayEvents = null; /* TODO: YOUR CODE GOES HERE */
+    PCollection<KV<String, PlayEvent>> sessionedPlayEvents =
+        pipeline
+            .apply(
+                "ReadGamePlayEvents",
+                new ChangeMe<PBegin, String>()
+            )
+            .apply(
+                "ParseGamePlayEvents",
+                new ChangeMe<PCollection<String>, PlayEvent>()
+            )
+            .apply(
+                "KeyGamePlayByEventId",
+                new ChangeMe<PCollection<PlayEvent>, KV<String, PlayEvent>>()
+            )
+            .apply(
+                "SessionizeGamePlayEvents",
+                new ChangeMe<PCollection<KV<String, PlayEvent>>, KV<String, PlayEvent>>()
+            );
 
-    // 1. Join events
+    // 1. Join events using CoGroupByKey
     // 2. Compute latency using ComputeLatencyFn
-    PCollection<KV<String, Long>> userLatency = null; /* TODO: YOUR CODE GOES HERE */
+    PCollection<KV<String, Long>> userLatency =
+        KeyedPCollectionTuple.of(playTag, sessionedPlayEvents)
+            .and(eventTag, sessionedEvents)
+            .apply(
+                "JoinScorePlayEvents",
+                new ChangeMe<KeyedPCollectionTuple<String>, KV<String, CoGbkResult>>()
+            )
+            .apply(
+                "ComputeLatency",
+                new ChangeMe<PCollection<KV<String, CoGbkResult>>, KV<String, Long>>()
+            );
 
     // 1. Get the values of userLatencies
     // 2. Re-window into GlobalWindows with periodic repeated triggers
-    // 3. Compute global approximate quantiles with fanout
-    PCollectionView<List<Long>> globalQuantiles = null; /* TODO: YOUR CODE GOES HERE */
+    // 3. Compute global approximate quantiles
+    PCollectionView<List<Long>> globalQuantiles =
+        userLatency
+            .apply(
+                "GetLatencies",
+                new ChangeMe<PCollection<KV<String, Long>>, Long>()
+            )
+            .apply(
+                "GlobalWindowRetrigger",
+                new ChangeMe<PCollection<Long>, Long>()
+            )
+            .apply(
+                "ComputeQuantiles",
+                ApproximateQuantiles.globally(GLOBAL_LATENCY_QUANTILES)
+            )
+            .apply(
+                "AsSingleton",
+                View.asSingleton()
+            );
 
     userLatency
         // Use the computed latency distribution as a side-input to filter out likely bad users.
