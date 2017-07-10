@@ -67,14 +67,19 @@ BigQuery.
 How many parse errors did you encounter? How many unique teams are present in
 the dataset?
 
-1.  Compile and run the pipeline. Note you need to replace YOUR-PROJECT,
+1. Get the project name with Gcloud and set it as an env variable:
+    ```shell
+    $ export PROJECT=`gcloud config get-value project`
+    ```
+
+1.  Compile and run the pipeline. Note you need to replace
     YOUR-STAGING-BUCKET and YOUR-BIGQUERY-DATASET with values from the previous
     section.
 
     ```shell
     $ mvn compile exec:java \
          -Dexec.mainClass=org.apache.beam.examples.complete.game.Exercise0 \
-         -Dexec.args="--project=YOUR-PROJECT \
+         -Dexec.args="--project=$PROJECT \
                       --tempLocation=gs://YOUR-STAGING-BUCKET \
                       --runner=DataflowRunner \
                       --outputDataset=YOUR-BIGQUERY-DATASET \
@@ -95,7 +100,7 @@ the dataset?
 1.  Check the number of distinct teams in the created BigQuery table.
 
     ```shell
-    $ bq query --project_id=YOUR-PROJECT \
+    $ bq query --project_id=$PROJECT \
         'select count(distinct team) from YOUR-BIGQUERY-DATASET.events;'
     ```
 
@@ -114,7 +119,7 @@ What is the total score of the user 'user0_AmberDingo'?
     ```shell
     $ mvn compile exec:java \
          -Dexec.mainClass=org.apache.beam.examples.complete.game.Exercise1 \
-         -Dexec.args="--project=YOUR-PROJECT \
+         -Dexec.args="--project=$PROJECT \
                       --tempLocation=gs://YOUR-STAGING-BUCKET \
                       --runner=DirectRunner \
                       --outputDataset=YOUR-BIGQUERY-DATASET \
@@ -126,7 +131,7 @@ What is the total score of the user 'user0_AmberDingo'?
     'user0_AmberDingo':
 
     ```shell
-    $ bq query --project_id=YOUR-PROJECT \
+    $ bq query --project_id=$PROJECT \
         'select total_score from YOUR-BIGQUERY-DATASET.user_scores \
          where user = "user0_AmberDingo";'
     ```
@@ -135,7 +140,7 @@ What is the total score of the user 'user0_AmberDingo'?
     first:
 
     ```shell
-    $ bq rm --project_id=YOUR-PROJECT YOUR-BIGQUERY-DATASET.user_scores
+    $ bq rm --project_id=$PROJECT YOUR-BIGQUERY-DATASET.user_scores
     ```
 
     and then execute the above `mvn` command with
@@ -158,7 +163,7 @@ What was the total score of 'AmberDingo' at '2017-03-18 16:00:00 UTC'?
     ```shell
     $ mvn compile exec:java \
          -Dexec.mainClass=org.apache.beam.examples.complete.game.Exercise2 \
-         -Dexec.args="--project=YOUR-PROJECT \
+         -Dexec.args="--project=$PROJECT \
                       --tempLocation=gs://YOUR-STAGING-BUCKET \
                       --runner=DirectRunner \
                       --outputDataset=YOUR-BIGQUERY-DATASET \
@@ -170,7 +175,7 @@ What was the total score of 'AmberDingo' at '2017-03-18 16:00:00 UTC'?
     'AmberDingo':
 
     ```shell
-    $ bq query --project_id=YOUR-PROJECT \
+    $ bq query --project_id=$PROJECT \
         'select total_score from YOUR-BIGQUERY-DATASET.hourly_team_scores \
          where team = "AmberDingo" and window_start = "2017-03-18 16:00:00 UTC";'
     ```
@@ -194,8 +199,8 @@ But first, we need to set up the injector to publish scores via PubSub.
 
     ```shell
     $ mvn exec:java \
-      -Dexec.mainClass="Injector" \
-      -Dexec.args="YOUR-PROJECT game_events_$USER none none"
+      -Dexec.mainClass="org.apache.beam.examples.complete.game.injector.Injector" \
+      -Dexec.args="$PROJECT game_events_$USER none none"
     ```
 
 Now complete the exercise so that it runs the pipeline from Exercise 2 in either
@@ -209,7 +214,7 @@ batch or streaming mode.
     ```shell
     $ mvn compile exec:java \
          -Dexec.mainClass=org.apache.beam.examples.complete.game.Exercise3 \
-         -Dexec.args="--project=YOUR-PROJECT \
+         -Dexec.args="--project=$PROJECT \
                       --tempLocation=gs://YOUR-STAGING-BUCKET \
                       --runner=DirectRunner \
                       --outputDataset=YOUR-BIGQUERY-DATASET \
@@ -222,12 +227,12 @@ batch or streaming mode.
     ```shell
     $ mvn compile exec:java \
          -Dexec.mainClass=org.apache.beam.examples.complete.game.Exercise3 \
-         -Dexec.args="--project=YOUR-PROJECT \
+         -Dexec.args="--project=$PROJECT \
                       --tempLocation=gs://YOUR-STAGING-BUCKET \
                       --runner=DataflowRunner \
                       --outputDataset=YOUR-BIGQUERY-DATASET \
                       --outputTableName=hourly_team_scores \
-                      --topic=projects/YOUR-PROJECT/topics/game_events_$USER \
+                      --topic=projects/$PROJECT/topics/game_events_$USER \
                       --streaming"
     ```
 
@@ -250,10 +255,10 @@ Part 2: Calculate the team scores for each minute that the pipeline runs.
     ```shell
     $ mvn compile exec:java \
           -Dexec.mainClass=org.apache.beam.examples.complete.game.Exercise4 \
-          -Dexec.args="--project=YOUR-PROJECT \
+          -Dexec.args="--project=$PROJECT \
           --tempLocation=gs://YOUR-STAGING_BUCKET \
           --runner=DataflowRunner \
-          --topic=projects/YOUR-PROJECT/topics/game_events_$USER \
+          --topic=projects/$PROJECT/topics/game_events_$USER \
           --outputDataset=YOUR-BIGQUERY-DATASET \
           --outputTableName=leaderboard"
     ```
@@ -261,7 +266,7 @@ Part 2: Calculate the team scores for each minute that the pipeline runs.
 1.  Check the user and team scores, eg:
 
     ```shell
-    $ bq query --project_id=YOUR-PROJECT \
+    $ bq query --project_id=$PROJECT \
          'SELECT * FROM [YOUR-BIGQUERY-DATASET.leaderboard_team] WHERE \
           team="AmethystKookaburra" AND timing="ON_TIME" ORDER BY window_start'
     ```
@@ -280,10 +285,10 @@ results to compute non-spammy team scores.
     ```shell
     $ mvn compile exec:java \
           -Dexec.mainClass=org.apache.beam.examples.complete.game.Exercise5 \
-          -Dexec.args="--project=YOUR-PROJECT \
+          -Dexec.args="--project=$PROJECT \
           --tempLocation=gs://YOUR-STAGING_BUCKET \
           --runner=DataflowRunner \
-          --topic=projects/YOUR-PROJECT/topics/game_events_$USER \
+          --topic=projects/$PROJECT/topics/game_events_$USER \
           --outputDataset=YOUR-BIGQUERY-DATASET \
           --outputTableName=despammed_scores"
     ```
@@ -291,7 +296,7 @@ results to compute non-spammy team scores.
 1.  Check the de-spammed user scores:
 
     ```shell
-    $ bq query --project_id=YOUR-PROJECT \
+    $ bq query --project_id=$PROJECT \
          'SELECT * FROM [YOUR-BIGQUERY-DATASET.despammed_scores] WHERE \
           team="AmethystKookaburra" ORDER BY window_start LIMIT 10'
     ```
@@ -308,10 +313,10 @@ Compute periodic global mean session durations for users.
     ```shell
     $ mvn compile exec:java \
           -Dexec.mainClass=org.apache.beam.examples.complete.game.Exercise6 \
-          -Dexec.args="--project=YOUR-PROJECT \
+          -Dexec.args="--project=$PROJECT \
           --tempLocation=gs://YOUR-STAGING_BUCKET \
           --runner=DataflowRunner \
-          --topic=projects/YOUR-PROJECT/topics/game_events_$USER \
+          --topic=projects/$PROJECT/topics/game_events_$USER \
           --outputDataset=YOUR-BIGQUERY-DATASET \
           --outputTableName=sessions"
     ```
@@ -319,7 +324,7 @@ Compute periodic global mean session durations for users.
 1.  Check the de-spammed user scores and mean session lengths:
 
     ```shell
-    $ bq query --project_id=YOUR-PROJECT \
+    $ bq query --project_id=$PROJECT \
          'SELECT * FROM [YOUR-BIGQUERY-DATASET.sessions] \
          ORDER BY window_start LIMIT 10'
     ```
@@ -337,7 +342,7 @@ play' events and 'game score' events.
     ```shell
     $ mvn exec:java \
       -Dexec.mainClass="Injector" \
-      -Dexec.args="YOUR-PROJECT game_events_$USER play_events_$USER none"
+      -Dexec.args="$PROJECT game_events_$USER play_events_$USER none"
     ```
 
 1.  Run the pipeline
@@ -345,11 +350,11 @@ play' events and 'game score' events.
     ```shell
     $ mvn compile exec:java \
           -Dexec.mainClass=org.apache.beam.examples.complete.game.Exercise7 \
-          -Dexec.args="--project=YOUR-PROJECT \
+          -Dexec.args="--project=$PROJECT \
           --tempLocation=gs://YOUR-STAGING_BUCKET \
           --runner=DataflowRunner \
-          --topic=projects/YOUR-PROJECT/topics/game_events_$USER \
-          --playEventsTopic=projects/YOUR-PROJECT/topics/play_events_$USER \
+          --topic=projects/$PROJECT/topics/game_events_$USER \
+          --playEventsTopic=projects/$PROJECT/topics/play_events_$USER \
           --outputDataset=YOUR-BIGQUERY-DATASET \
           --outputTableName=exercise7"
     ```
