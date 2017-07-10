@@ -133,9 +133,7 @@ public class Exercise1 {
         .apply(TextIO.read().from(options.getInput()))
         .apply("ParseGameEvent", ParDo.of(new ParseEventFn()))
         // Extract and sum username/score pairs from the event data.
-        .apply("ExtractUserScore",
-            new org.apache.beam.examples.complete.game.solutions.Exercise1.ExtractAndSumScore(
-                "user"))
+        .apply("ExtractUserScore", new ExtractAndSumScore("user"))
         // Write the results to BigQuery.
         .apply("FormatUserScoreSums", ParDo.of(new FormatUserScoreSumsFn()))
         .apply(
