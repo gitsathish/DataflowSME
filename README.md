@@ -73,7 +73,7 @@ the dataset?
 
     ```shell
     $ mvn compile exec:java \
-         -Dexec.mainClass=org.apache.beam.examples.complete.game.Exercise0 \
+         -Dexec.mainClass=Exercise0 \
          -Dexec.args="--project=YOUR-PROJECT \
                       --tempLocation=gs://YOUR-STAGING-BUCKET \
                       --runner=DataflowRunner \
@@ -108,18 +108,18 @@ Use Dataflow to calculate per-user scores and write them to BigQuery.
 What is the total score of the user 'user0_AmberDingo'?
 
 1.  Modify
-    `src/main/java8/org/apache/beam/examples/complete/game/Exercise1.java`
+    `src/main/java8/com/google/cloud/dataflow/tutorials/game/Exercise1.java`
 1.  Run the pipeline (using Direct runner)
 
     ```shell
     $ mvn compile exec:java \
-         -Dexec.mainClass=org.apache.beam.examples.complete.game.Exercise1 \
+         -Dexec.mainClass=Exercise1 \
          -Dexec.args="--project=YOUR-PROJECT \
                       --tempLocation=gs://YOUR-STAGING-BUCKET \
                       --runner=DirectRunner \
                       --outputDataset=YOUR-BIGQUERY-DATASET \
                       --outputTableName=user_scores \
-                      --input=gs://dataflow-sme-tutorial/gaming_data1.csv"
+                      --input=gs://dataflow-sme-tutorial/gaming_data0.csv"
     ```
 
 1.  Once the pipeline finishes successfully check the score for
@@ -163,7 +163,7 @@ What was the total score of 'AmberDingo' at '2017-03-18 16:00:00 UTC'?
                       --runner=DirectRunner \
                       --outputDataset=YOUR-BIGQUERY-DATASET \
                       --outputTableName=hourly_team_scores \
-                      --input=gs://dataflow-sme-tutorial/gaming_data1.csv"
+                      --input=gs://dataflow-sme-tutorial/gaming_data0.csv"
     ```
 
 1.  Once the pipeline finishes successfully check the score for team
