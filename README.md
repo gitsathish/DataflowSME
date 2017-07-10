@@ -113,7 +113,7 @@ Use Dataflow to calculate per-user scores and write them to BigQuery.
 What is the total score of the user 'user0_AmberDingo'?
 
 1.  Modify
-    `src/main/java8/com/google/cloud/dataflow/tutorials/game/Exercise1.java`
+    `src/main/java8/org/apache/beam/examples/complete/game/Exercise1.java`
 1.  Run the pipeline (using Direct runner)
 
     ```shell
@@ -156,7 +156,7 @@ Use Dataflow to calculate per-hour team scores and write them to BigQuery.
 What was the total score of 'AmberDingo' at '2017-03-18 16:00:00 UTC'?
 
 1.  Modify
-    `src/main/java8/com/google/cloud/dataflow/tutorials/game/Exercise2.java`
+    `src/main/java8/org/apache/beam/examples/complete/game/Exercise2.java`
 
 1.  Run the pipeline
 
@@ -207,7 +207,7 @@ Now complete the exercise so that it runs the pipeline from Exercise 2 in either
 batch or streaming mode.
 
 1.  Modify
-    `src/main/java8/com/google/cloud/dataflow/tutorials/game/Exercise3.java`
+    `src/main/java8/org/apache/beam/examples/complete/game/Exercise3.java`
 
 1.  Run the pipeline in batch mode (this is equivalent to Exercise 2).
 
@@ -249,7 +249,7 @@ every thirty seconds.
 Part 2: Calculate the team scores for each minute that the pipeline runs.
 
 1.  Modify
-    `src/main/java8/com/google/cloud/dataflow/tutorials/game/Exercise4.java`
+    `src/main/java8/org/apache/beam/examples/complete/game/Exercise4.java`
 1.  Run the pipeline
 
     ```shell
@@ -260,7 +260,8 @@ Part 2: Calculate the team scores for each minute that the pipeline runs.
           --runner=DataflowRunner \
           --topic=projects/$PROJECT/topics/game_events_$USER \
           --outputDataset=YOUR-BIGQUERY-DATASET \
-          --outputTableName=leaderboard"
+          --outputTableName=leaderboard \
+          --streaming"
     ```
 
 1.  Check the user and team scores, eg:
@@ -278,7 +279,7 @@ score that is 2.5x the global average in each window, and then (b) use the
 results to compute non-spammy team scores.
 
 1.  Modify
-    `src/main/java8/com/google/cloud/dataflow/tutorials/game/Exercise5.java`
+    `src/main/java8/org/apache/beam/examples/complete/game/Exercise5.java`
 
 1.  Run the pipeline
 
@@ -290,7 +291,8 @@ results to compute non-spammy team scores.
           --runner=DataflowRunner \
           --topic=projects/$PROJECT/topics/game_events_$USER \
           --outputDataset=YOUR-BIGQUERY-DATASET \
-          --outputTableName=despammed_scores"
+          --outputTableName=despammed_scores \
+          --streaming"
     ```
 
 1.  Check the de-spammed user scores:
@@ -306,7 +308,7 @@ results to compute non-spammy team scores.
 Compute periodic global mean session durations for users.
 
 1.  Modify
-    `src/main/java8/com/google/cloud/dataflow/tutorials/game/Exercise6.java`
+    `src/main/java8/org/apache/beam/examples/complete/game/Exercise6.java`
 
 1.  Run the pipeline
 
@@ -318,7 +320,8 @@ Compute periodic global mean session durations for users.
           --runner=DataflowRunner \
           --topic=projects/$PROJECT/topics/game_events_$USER \
           --outputDataset=YOUR-BIGQUERY-DATASET \
-          --outputTableName=sessions"
+          --outputTableName=sessions \
+          --streaming"
     ```
 
 1.  Check the de-spammed user scores and mean session lengths:
@@ -335,13 +338,13 @@ Implement a pipeline that filters spammy users based on latency between 'game
 play' events and 'game score' events.
 
 1.  Modify
-    `src/main/java8/com/google/cloud/dataflow/tutorials/game/Exercise7.java`
+    `src/main/java8/org/apache/beam/examples/complete/game/Exercise7.java`
 
 1.  Run the injector with additional output for play events.
 
     ```shell
     $ mvn exec:java \
-      -Dexec.mainClass="Injector" \
+      -Dexec.mainClass="org.apache.beam.examples.complete.game.injector.Injector" \
       -Dexec.args="$PROJECT game_events_$USER play_events_$USER none"
     ```
 
@@ -356,5 +359,6 @@ play' events and 'game score' events.
           --topic=projects/$PROJECT/topics/game_events_$USER \
           --playEventsTopic=projects/$PROJECT/topics/play_events_$USER \
           --outputDataset=YOUR-BIGQUERY-DATASET \
-          --outputTableName=exercise7"
+          --outputTableName=exercise7 \
+          --streaming"
     ```
