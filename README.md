@@ -46,7 +46,7 @@ included `Injector` program). All exercises write their output to BigQuery.
 1.  Clone the github repository
 
     ```shell
-    $ git clone https://github.com/mdvorsky/DataflowSME.git
+    $ git clone https://github.com/malo-denielou/DataflowSME.git
     $ cd DataflowSME
     ```
 
