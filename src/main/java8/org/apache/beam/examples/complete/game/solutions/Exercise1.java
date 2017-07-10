@@ -69,10 +69,19 @@ public class Exercise1 {
     @Override
     public PCollection<KV<String, Integer>> expand(PCollection<GameEvent> gameEvents) {
       return gameEvents
+          .apply(ParDo.of(new DoFn<GameEvent, KV<String, Integer>>(){
+            @ProcessElement
+            public void processElement(ProcessContext c) {
+              GameEvent event = c.element();
+              c.output(KV.of(event.getKey(field), event.getScore()));
+            }
+          }))
+          /*
+           // alternate implementation
           .apply(MapElements
               .into(TypeDescriptors.kvs(TypeDescriptors.strings(), TypeDescriptors.integers()))
               .via((GameEvent event) -> KV.<String, Integer>of(event.getKey(field),
-                  event.getScore())))
+                  event.getScore()))) */
           .apply(Sum.<String>integersPerKey());
     }
   }
