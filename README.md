@@ -73,7 +73,7 @@ the dataset?
 
     ```shell
     $ mvn compile exec:java \
-         -Dexec.mainClass=Exercise0 \
+         -Dexec.mainClass=org.apache.beam.examples.complete.game.Exercise0 \
          -Dexec.args="--project=YOUR-PROJECT \
                       --tempLocation=gs://YOUR-STAGING-BUCKET \
                       --runner=DataflowRunner \
@@ -113,7 +113,7 @@ What is the total score of the user 'user0_AmberDingo'?
 
     ```shell
     $ mvn compile exec:java \
-         -Dexec.mainClass=Exercise1 \
+         -Dexec.mainClass=org.apache.beam.examples.complete.game.Exercise1 \
          -Dexec.args="--project=YOUR-PROJECT \
                       --tempLocation=gs://YOUR-STAGING-BUCKET \
                       --runner=DirectRunner \
@@ -157,7 +157,7 @@ What was the total score of 'AmberDingo' at '2017-03-18 16:00:00 UTC'?
 
     ```shell
     $ mvn compile exec:java \
-         -Dexec.mainClass=Exercise2 \
+         -Dexec.mainClass=org.apache.beam.examples.complete.game.Exercise2 \
          -Dexec.args="--project=YOUR-PROJECT \
                       --tempLocation=gs://YOUR-STAGING-BUCKET \
                       --runner=DirectRunner \
@@ -208,7 +208,7 @@ batch or streaming mode.
 
     ```shell
     $ mvn compile exec:java \
-         -Dexec.mainClass=Exercise3 \
+         -Dexec.mainClass=org.apache.beam.examples.complete.game.Exercise3 \
          -Dexec.args="--project=YOUR-PROJECT \
                       --tempLocation=gs://YOUR-STAGING-BUCKET \
                       --runner=DirectRunner \
@@ -221,7 +221,7 @@ batch or streaming mode.
 
     ```shell
     $ mvn compile exec:java \
-         -Dexec.mainClass=Exercise3 \
+         -Dexec.mainClass=org.apache.beam.examples.complete.game.Exercise3 \
          -Dexec.args="--project=YOUR-PROJECT \
                       --tempLocation=gs://YOUR-STAGING-BUCKET \
                       --runner=DataflowRunner \
@@ -249,7 +249,7 @@ Part 2: Calculate the team scores for each minute that the pipeline runs.
 
     ```shell
     $ mvn compile exec:java \
-          -Dexec.mainClass=Exercise4 \
+          -Dexec.mainClass=org.apache.beam.examples.complete.game.Exercise4 \
           -Dexec.args="--project=YOUR-PROJECT \
           --tempLocation=gs://YOUR-STAGING_BUCKET \
           --runner=DataflowRunner \
@@ -279,7 +279,7 @@ results to compute non-spammy team scores.
 
     ```shell
     $ mvn compile exec:java \
-          -Dexec.mainClass=Exercise5 \
+          -Dexec.mainClass=org.apache.beam.examples.complete.game.Exercise5 \
           -Dexec.args="--project=YOUR-PROJECT \
           --tempLocation=gs://YOUR-STAGING_BUCKET \
           --runner=DataflowRunner \
@@ -307,7 +307,7 @@ Compute periodic global mean session durations for users.
 
     ```shell
     $ mvn compile exec:java \
-          -Dexec.mainClass=Exercise6 \
+          -Dexec.mainClass=org.apache.beam.examples.complete.game.Exercise6 \
           -Dexec.args="--project=YOUR-PROJECT \
           --tempLocation=gs://YOUR-STAGING_BUCKET \
           --runner=DataflowRunner \
@@ -344,7 +344,7 @@ play' events and 'game score' events.
 
     ```shell
     $ mvn compile exec:java \
-          -Dexec.mainClass=Exercise7 \
+          -Dexec.mainClass=org.apache.beam.examples.complete.game.Exercise7 \
           -Dexec.args="--project=YOUR-PROJECT \
           --tempLocation=gs://YOUR-STAGING_BUCKET \
           --runner=DataflowRunner \
