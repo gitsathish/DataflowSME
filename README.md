@@ -232,8 +232,7 @@ batch or streaming mode.
                       --runner=DataflowRunner \
                       --outputDataset=YOUR-BIGQUERY-DATASET \
                       --outputTableName=hourly_team_scores \
-                      --topic=projects/$PROJECT/topics/game_events_$USER \
-                      --streaming"
+                      --topic=projects/$PROJECT/topics/game_events_$USER"
     ```
 
 ## Exercise 4
@@ -260,8 +259,7 @@ Part 2: Calculate the team scores for each minute that the pipeline runs.
           --runner=DataflowRunner \
           --topic=projects/$PROJECT/topics/game_events_$USER \
           --outputDataset=YOUR-BIGQUERY-DATASET \
-          --outputTableName=leaderboard \
-          --streaming"
+          --outputTableName=leaderboard"
     ```
 
 1.  Check the user and team scores, eg:
@@ -291,8 +289,7 @@ results to compute non-spammy team scores.
           --runner=DataflowRunner \
           --topic=projects/$PROJECT/topics/game_events_$USER \
           --outputDataset=YOUR-BIGQUERY-DATASET \
-          --outputTableName=despammed_scores \
-          --streaming"
+          --outputTableName=despammed_scores"
     ```
 
 1.  Check the de-spammed user scores:
@@ -320,8 +317,7 @@ Compute periodic global mean session durations for users.
           --runner=DataflowRunner \
           --topic=projects/$PROJECT/topics/game_events_$USER \
           --outputDataset=YOUR-BIGQUERY-DATASET \
-          --outputTableName=sessions \
-          --streaming"
+          --outputTableName=sessions"
     ```
 
 1.  Check the de-spammed user scores and mean session lengths:
@@ -359,6 +355,5 @@ play' events and 'game score' events.
           --topic=projects/$PROJECT/topics/game_events_$USER \
           --playEventsTopic=projects/$PROJECT/topics/play_events_$USER \
           --outputDataset=YOUR-BIGQUERY-DATASET \
-          --outputTableName=exercise7 \
-          --streaming"
+          --outputTableName=exercise7"
     ```
