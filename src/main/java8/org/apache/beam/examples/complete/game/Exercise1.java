@@ -77,15 +77,15 @@ public class Exercise1 {
       //   2. Compute the sum of the scores for each key.
       //   3. Run your pipeline on the Dataflow service.
       return gameEvents
-          // MapElements is a PTransform for mapping a function over the elements of a PCollection.
-          // MapElements.via() takes a lambda expression defining the function to apply.
-          // Write the expression that creates key-value pairs, using the KeyField as the key and
-          // the score as the value. KV.of(key, value) creates a key-value pair.  Java erasure means
-          // we can't determine the output type of our MapElements.  We declare the output type
-          // explicitly using into. Use the following code to add the output type:
-          // .into(TypeDescriptors.kvs(TypeDescriptors.strings(), TypeDescriptors.integers()))
-          .apply(new ChangeMe<>() /* TODO: YOUR CODE GOES HERE */)
-          // Sum is a family of PTransforms for computing the sum of elements in a PCollection.
+          .apply(ParDo.of(new DoFn<GameEvent, KV<String, Integer>>(){
+            @ProcessElement
+            public void processElement(ProcessContext c) {
+              // 1. Creates key-value pairs, using the KeyField as the key and
+              // the score as the value. KV.of(key, value) creates a key-value pair.
+              /* TODO: YOUR CODE GOES HERE */
+            }
+          })) 
+          // 2. Sum is a family of PTransforms for computing the sum of elements in a PCollection.
           // Select the appropriate method to compute the sum over each key.
           .apply(new ChangeMe<>() /* TODO: YOUR CODE GOES HERE */);
       // [END EXERCISE 1]:
