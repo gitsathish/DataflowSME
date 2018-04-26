@@ -15,6 +15,8 @@
  */
 package org.apache.beam.examples.complete.game;
 
+import static org.apache.beam.sdk.transforms.windowing.TimestampCombiner.END_OF_WINDOW;
+
 import com.google.api.services.bigquery.model.TableFieldSchema;
 import com.google.api.services.bigquery.model.TableReference;
 import com.google.api.services.bigquery.model.TableRow;
@@ -22,9 +24,10 @@ import com.google.api.services.bigquery.model.TableSchema;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.beam.examples.complete.game.utils.ChangeMe;
 import org.apache.beam.examples.complete.game.utils.GameEvent;
 import org.apache.beam.examples.complete.game.utils.Options;
+import org.apache.beam.examples.complete.game.utils.ParseEventFn;
+import org.apache.beam.examples.complete.game.utils.ParsePlayEventFn;
 import org.apache.beam.examples.complete.game.utils.PlayEvent;
 import org.apache.beam.runners.dataflow.DataflowRunner;
 import org.apache.beam.sdk.Pipeline;
@@ -33,6 +36,7 @@ import org.apache.beam.sdk.extensions.gcp.options.GcpOptions;
 import org.apache.beam.sdk.io.gcp.bigquery.BigQueryIO;
 import org.apache.beam.sdk.io.gcp.bigquery.BigQueryIO.Write.CreateDisposition;
 import org.apache.beam.sdk.io.gcp.bigquery.BigQueryIO.Write.WriteDisposition;
+import org.apache.beam.sdk.io.gcp.pubsub.PubsubIO;
 import org.apache.beam.sdk.metrics.Counter;
 import org.apache.beam.sdk.metrics.Metrics;
 import org.apache.beam.sdk.options.Description;
@@ -43,8 +47,11 @@ import org.apache.beam.sdk.transforms.*;
 import org.apache.beam.sdk.transforms.join.CoGbkResult;
 import org.apache.beam.sdk.transforms.join.CoGroupByKey;
 import org.apache.beam.sdk.transforms.join.KeyedPCollectionTuple;
+import org.apache.beam.sdk.transforms.windowing.AfterPane;
 import org.apache.beam.sdk.transforms.windowing.AfterProcessingTime;
 import org.apache.beam.sdk.transforms.windowing.GlobalWindows;
+import org.apache.beam.sdk.transforms.windowing.Repeatedly;
+import org.apache.beam.sdk.transforms.windowing.Sessions;
 import org.apache.beam.sdk.transforms.windowing.Window;
 import org.apache.beam.sdk.values.*;
 import org.joda.time.Duration;
@@ -151,92 +158,83 @@ public class Exercise7 {
         pipeline
             .apply(
                 "ReadGameScoreEvents",
-                new ChangeMe<PBegin, String>()
-            )
-            .apply(
-                "ParseGameEvents",
-                new ChangeMe<PCollection<String>, GameEvent>()
-            )
+                PubsubIO.readStrings().withTimestampAttribute(TIMESTAMP_ATTRIBUTE)
+                    .withIdAttribute(MESSAGE_ID_ATTRIBUTE).fromTopic(options.getTopic()))
+            .apply("ParseGameScoreEvents", ParDo.of(new ParseEventFn()))
             .apply(
                 "KeyGameScoreByEventId",
-                new ChangeMe<PCollection<GameEvent>, KV<String, GameEvent>>()
-            )
+                WithKeys.of((GameEvent event) -> event.getEventId())
+                    .withKeyType(TypeDescriptor.of(String.class)))
             .apply(
                 "SessionizeGameScoreEvents",
-                new ChangeMe<PCollection<KV<String, GameEvent>>, KV<String, GameEvent>>()
-            );
+                Window.<KV<String, GameEvent>>into(
+                    Sessions.withGapDuration(Duration.standardMinutes(SESSION_GAP_MINUTES)))
+                    .withTimestampCombiner(END_OF_WINDOW));
 
-    //  1. Read play events with message id and timestamp
-    //  2. Parse events
-    //  3. Key by event id
-    //  4. Sessionize.
+    // Read PlayEvents from Pub/Sub using custom timestamps and custom message id label.
     PCollection<KV<String, PlayEvent>> sessionedPlayEvents =
         pipeline
             .apply(
                 "ReadGamePlayEvents",
-                new ChangeMe<PBegin, String>()
-            )
-            .apply(
-                "ParseGamePlayEvents",
-                new ChangeMe<PCollection<String>, PlayEvent>()
-            )
+                PubsubIO.readStrings().withTimestampAttribute(TIMESTAMP_ATTRIBUTE)
+                    .withIdAttribute(MESSAGE_ID_ATTRIBUTE)
+                    .fromTopic(options.getPlayEventsTopic()))
+            .apply("ParseGamePlayEvents", ParDo.of(new ParsePlayEventFn()))
             .apply(
                 "KeyGamePlayByEventId",
-                new ChangeMe<PCollection<PlayEvent>, KV<String, PlayEvent>>()
-            )
+                WithKeys.of((PlayEvent play) -> play.getEventId())
+                    .withKeyType(TypeDescriptor.of(String.class)))
             .apply(
                 "SessionizeGamePlayEvents",
-                new ChangeMe<PCollection<KV<String, PlayEvent>>, KV<String, PlayEvent>>()
-            );
+                Window.<KV<String, PlayEvent>>into(
+                    Sessions.withGapDuration(Duration.standardMinutes(SESSION_GAP_MINUTES)))
+                    .withTimestampCombiner(END_OF_WINDOW));
 
-    // 1. Join events using CoGroupByKey
-    // 2. Compute latency using ComputeLatencyFn
+    // Compute per-user latency.
     PCollection<KV<String, Long>> userLatency =
         KeyedPCollectionTuple.of(playTag, sessionedPlayEvents)
             .and(eventTag, sessionedEvents)
-            .apply(
-                "JoinScorePlayEvents",
-                new ChangeMe<KeyedPCollectionTuple<String>, KV<String, CoGbkResult>>()
-            )
-            .apply(
-                "ComputeLatency",
-                new ChangeMe<PCollection<KV<String, CoGbkResult>>, KV<String, Long>>()
-            );
+            .apply("JoinScorePlayEvents", CoGroupByKey.create())
+            .apply("ComputeLatency", ParDo.of(new ComputeLatencyFn()));
 
     // 1. Get the values of userLatencies
     // 2. Re-window into GlobalWindows that repeatedly triggers after 1000 new elements
     // 3. Compute global approximate quantiles
     PCollectionView<List<Long>> globalQuantiles =
         userLatency
-            .apply(
-                "GetLatencies",
-                new ChangeMe<PCollection<KV<String, Long>>, Long>()
-            )
+            .apply("GetLatencies", Values.create())
+            // Re-window session results into a global window, and trigger periodically making sure
+            // to use the full accumulated window contents.
             .apply(
                 "GlobalWindowRetrigger",
-                new ChangeMe<PCollection<Long>, Long>()
-            )
+                Window.<Long>into(new GlobalWindows())
+                    .triggering(Repeatedly.forever(AfterPane.elementCountAtLeast(1000)))
+                    .accumulatingFiredPanes())
             .apply(
-                "ComputeQuantiles",
-                ApproximateQuantiles.globally(GLOBAL_LATENCY_QUANTILES)
-            )
-            .apply(
-                "AsSingleton",
-                View.asSingleton()
-            );
+                ((Combine.Globally<Long, List<Long>>)
+                    ApproximateQuantiles.<Long>globally(GLOBAL_LATENCY_QUANTILES))
+                    .withFanout(GLOBAL_AGGREGATE_FANOUT)
+                    .asSingletonView());
 
     userLatency
         // Use the computed latency distribution as a side-input to filter out likely bad users.
         .apply(
             "DetectBadUsers",
-            ParDo.of(
-                new DoFn<KV<String, Long>, String>() {
-                  public void processElement(ProcessContext c) {
-                        /* TODO: YOUR CODE GOES HERE */
-                    throw new RuntimeException("Not implemented");
-                  }
-                }).withSideInputs(globalQuantiles)
-        )
+            ParDo
+                .of(
+                    new DoFn<KV<String, Long>, String>() {
+                      @ProcessElement
+                      public void processElement(ProcessContext c) {
+                        String user = c.element().getKey();
+                        Long latency = c.element().getValue();
+                        List<Long> quantiles = c.sideInput(globalQuantiles);
+                        // Users in the first quantile are considered spammers, since their
+                        // score to play event latency is too low, suggesting a robot.
+                        if (latency < quantiles.get(1)) {
+                          c.output(user);
+                        }
+                      }
+                    }).withSideInputs(globalQuantiles))
         // We want to only emit a single BigQuery row for every bad user. To do this, we
         // re-key by user, then window globally and trigger on the first element for each key.
         .apply(
@@ -257,7 +255,6 @@ public class Exercise7 {
                 .withSchema(FormatBadUserFn.getSchema())
                 .withCreateDisposition(CreateDisposition.CREATE_IF_NEEDED)
                 .withWriteDisposition(WriteDisposition.WRITE_APPEND));
-    // [END EXERCISE 7]
 
     PipelineResult result = pipeline.run();
     result.waitUntilFinish();

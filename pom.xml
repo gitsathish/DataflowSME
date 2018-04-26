@@ -22,14 +22,14 @@
   <parent>
     <groupId>com.google.cloud.dataflow</groupId>
     <artifactId>google-cloud-dataflow-java-sdk-parent</artifactId>
-    <version>2.0.0</version>
+    <version>2.4.0</version>
   </parent>
 
   <groupId>com.google.cloud.dataflow</groupId>
   <artifactId>DataflowTutorials</artifactId>
   <name>Google Cloud Dataflow Java Tutorials</name>
 
-  <version>0.0.1-TUTORIALS</version>
+  <version>1.0.0</version>
 
   <packaging>jar</packaging>
 
@@ -46,6 +46,7 @@
           <plugin>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>build-helper-maven-plugin</artifactId>
+            <version>3.0.0</version>
             <executions>
               <execution>
                 <id>add-java8-main-source</id>
@@ -120,10 +121,6 @@
   <build>
     <plugins>
       <plugin>
-        <artifactId>maven-compiler-plugin</artifactId>
-      </plugin>
-
-      <plugin>
         <artifactId>maven-shade-plugin</artifactId>
         <version>2.4.1</version>
         <executions>
@@ -168,54 +165,13 @@
     <dependency>
       <groupId>com.google.cloud.dataflow</groupId>
       <artifactId>google-cloud-dataflow-java-sdk-all</artifactId>
-      <version>2.0.0</version>
+      <version>2.4.0</version>
     </dependency>
 
     <dependency>
       <groupId>com.google.api-client</groupId>
       <artifactId>google-api-client</artifactId>
-      <version>1.22.0</version>
-      <exclusions>
-        <!-- Exclude an old version of guava that is being pulled
-             in by a transitive dependency of google-api-client -->
-        <exclusion>
-          <groupId>com.google.guava</groupId>
-          <artifactId>guava-jdk5</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-
-    <dependency>
-      <groupId>com.google.apis</groupId>
-      <artifactId>google-api-services-dataflow</artifactId>
-      <version>v1b3-rev206-1.22.0</version>
-      <exclusions>
-        <!-- Exclude an old version of guava that is being pulled
-             in by a transitive dependency of google-api-client -->
-        <exclusion>
-          <groupId>com.google.guava</groupId>
-          <artifactId>guava-jdk5</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-
-    <dependency>
-      <groupId>com.google.apis</groupId>
-      <artifactId>google-api-services-bigquery</artifactId>
-      <version>v2-rev350-1.22.0</version>
-      <exclusions>
-        <!-- Exclude an old version of guava that is being pulled
-             in by a transitive dependency of google-api-client -->
-        <exclusion>
-          <groupId>com.google.guava</groupId>
-          <artifactId>guava-jdk5</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-
-    <dependency>
-      <groupId>com.google.http-client</groupId>
-      <artifactId>google-http-client</artifactId>
+      <!-- DO _NOT_ UPGRADE TO 1.23.0. It has a bug that causes it to fail when staging files -->
       <version>1.22.0</version>
       <exclusions>
         <!-- Exclude an old version of guava that is being pulled
@@ -229,9 +185,8 @@
 
     <dependency>
       <groupId>org.apache.beam</groupId>
-      <artifactId>beam-runners-direct-java</artifactId>
-      <version>2.0.0</version>
-      <scope>runtime</scope>
+      <artifactId>beam-runners-google-cloud-dataflow-java</artifactId>
+      <version>2.4.0</version>
     </dependency>
 
     <dependency>
@@ -243,7 +198,8 @@
     <dependency>
       <groupId>com.google.apis</groupId>
       <artifactId>google-api-services-pubsub</artifactId>
-      <version>v1-rev10-1.22.0</version>
+      <!-- DO NOT UPGRADE TO 1.23. Version 1.23 won't work with google-api-client v1.22 -->
+      <version>v1-rev383-1.22.0</version>
       <exclusions>
         <!-- Exclude an old version of guava that is being pulled
              in by a transitive dependency of google-api-client -->
@@ -257,32 +213,32 @@
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
-      <version>20.0</version>
+      <version>24.1-jre</version>
     </dependency>
 
     <dependency>
       <groupId>joda-time</groupId>
       <artifactId>joda-time</artifactId>
-      <version>2.4</version>
+      <version>2.9.9</version>
     </dependency>
 
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
-      <version>1.7.14</version>
+      <version>1.7.25</version>
     </dependency>
 
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-jdk14</artifactId>
-      <version>1.7.14</version>
+      <version>1.7.25</version>
       <scope>runtime</scope>
     </dependency>
 
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>javax.servlet-api</artifactId>
-      <version>3.1.0</version>
+      <version>4.0.1</version>
     </dependency>
 
     <!-- Hamcrest and JUnit are required dependencies of DataflowAssert,
