@@ -16,9 +16,9 @@ included `Injector` program). All exercises write their output to BigQuery.
 __NOTE:__ Python examples (WIP) have been added, for additional instructions
 for running these examples, please refer to
 [this](https://docs.google.com/document/d/1cPZTtFxIEFafcGjk9oKifwiVwXWGvJEepflVTru7QI8/edit)
-document. Note that streaming support for Python is currently in Beta for
+document. Streaming support for Python is currently in Beta for
 Dataflow, and there is a feature gap between Java and Python, see
-[limitations](https://beam.apache.org/documentation/sdks/python-streaming/#unsupported-features)
+[limitations](https://beam.apache.org/documentation/sdks/python-streaming/#unsupported-features).
 
 __Pull requests are encouraged!__
 
