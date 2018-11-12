@@ -17,6 +17,8 @@ NOTE: Python examples (WIP) have been added, for additional instructions for run
 these examples, please refer to [this](https://docs.google.com/document/d/1cPZTtFxIEFafcGjk9oKifwiVwXWGvJEepflVTru7QI8/edit)
 document.
 
+__Pull requests are encouraged!__
+
 ## Set up your environment
 
 ### Tools
