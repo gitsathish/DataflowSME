@@ -26,7 +26,7 @@ __Pull requests are encouraged!__
 
 ### Tools
 
-1.  Install [Java 8](http://www.oracle.com/technetwork/java/javase/downloads/index.html)
+1.  Install [JDK version 8 or newer](http://www.oracle.com/technetwork/java/javase/downloads/index.html)
 1.  Install Maven (for
     [windows](https://maven.apache.org/guides/getting-started/windows-prerequisites.html),
     [mac](http://tostring.me/151/installing-maven-on-os-x/),
