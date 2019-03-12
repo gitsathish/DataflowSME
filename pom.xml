@@ -91,6 +91,7 @@
                 <configuration>
                   <source>1.8</source>
                   <target>1.8</target>
+                  <release>8</release>
                   <includes>
                     <!-- This pattern is brittle; we would prefer to filter on the directory
                          but that seems to be unavailable to us. -->
